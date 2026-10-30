@@ -100,7 +100,8 @@ void Endpoint0(chanend chan_ep0_out, chanend chan_ep0_in, client interface contr
             switch(bmRequestType)
             {
                 case USB_BMREQ_D2H_STANDARD_DEV:
-                    if (sp.bRequest == USB_GET_DESCRIPTOR) {
+                    if ((sp.bRequest == USB_GET_DESCRIPTOR) &&
+                        ((sp.wValue & 0xff00) == (USB_DESCTYPE_BOS << 8))) {
                         result = XUD_GetBosDescriptor(1, ep0_out, ep0_in, &sp);
                     }
                     break;
@@ -112,7 +113,8 @@ void Endpoint0(chanend chan_ep0_out, chanend chan_ep0_in, client interface contr
                     break;
 
                 case USB_BMREQ_D2H_VENDOR_DEV:
-                    if (sp.bRequest == XUD_REQUEST_GET_MSOS_DESCRIPTOR) {
+                    if ((sp.bRequest == XUD_REQUEST_GET_MSOS_DESCRIPTOR) &&
+                        (sp.wIndex == MS_OS_20_DESCRIPTOR_INDEX)) {
                         result = XUD_GetMsosDescriptor(1, ep0_out, ep0_in, &sp);
 
                     } else {
